@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.board.mapper.PostMapper">
+
+    <insert id="postInsert">
+        INSERT INTO posts (category_id, user_id, title, content)
+        VALUES (#{categoryId}, #{userId}, #{title}, #{content})
+    </insert>
+    
+    <select id="getAllPost" resultType="com.example.board.dto.PostResponseDto">
+        SELECT id, title, createdAt, updatedAt, 
+    	FROM posts
+    </select>   
+    
+    <delete id="deletePost">
+    	DELETE FROM posts
+    	WHERE id = #{id}
+    </delete>
+    
+    <update id="updatePost">
+    	UPDATE posts SET content = #{content} where id = {id}
+    </update>
+    
+    <insert id="insertComment">
+        INSERT INTO comments (user_id, post_id, content)
+        VALUES (#{user_id}, #{post_id}, #{content})
+    </insert>    
+    
+    <delete id="deleteComment">
+    	DELETE FROM comments
+    	WHERE id = #{id}
+    </delete>    
+    
+    <select id="getAllCount" resultType="com.example.board.dto.BoardDto">
+    SELECT 
+        id, title, writer, created_at
+    FROM board
+    ORDER BY id DESC
+    LIMIT #{limit} OFFSET #{offset}
+	</select>
+    
+    <select id="getTotalCount" resultType="int">
+        SELECT COUNT(*) FROM board
+    </select>  
+    
+</mapper>
