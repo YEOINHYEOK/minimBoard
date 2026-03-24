@@ -1,47 +1,114 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.example.board.mapper.PostMapper">
+
+
+   <resultMap id="PostDetailResultMap" type="com.example.board.dto.PostResponseDto">
+        <id     property="id"           column="post_id"/>
+        <result property="title"        column="title"/>
+        <result property="content"      column="content"/>
+        <result property="viewCount"    column="view_count"/>
+        <result property="categoryName" column="category_name"/>
+        <result property="authorName"   column="author_name"/>
+        <result property="createdAt"    column="created_at"/>
+        <result property="updatedAt"    column="updated_at"/>
+    </resultMap>
 
     <insert id="postInsert">
         INSERT INTO posts (category_id, user_id, title, content)
         VALUES (#{categoryId}, #{userId}, #{title}, #{content})
     </insert>
-    
+
+
     <select id="getAllPost" resultType="com.example.board.dto.PostResponseDto">
-        SELECT id, title, createdAt, updatedAt, 
-    	FROM posts
-    </select>   
-    
-    <delete id="deletePost">
-    	DELETE FROM posts
-    	WHERE id = #{id}
-    </delete>
-    
+        SELECT
+            p.id,
+            p.title,
+            p.created_at AS createdAt,
+            p.updated_at AS updatedAt,
+            u.username   AS authorName,
+            c.name       AS categoryName
+        FROM posts p
+        LEFT JOIN users      u ON p.user_id      = u.id
+        LEFT JOIN categories c ON p.category_id  = c.id
+        ORDER BY p.created_at DESC
+    </select>
+
+
+    <select id="getFindPost" resultMap="PostDetailResultMap">
+        SELECT
+            p.id            AS post_id,
+            p.title         AS title,
+            p.content       AS content,
+            p.view_count    AS view_count,
+            p.created_at    AS created_at,
+            p.updated_at    AS updated_at,
+            c.name          AS category_name,
+            u.username      AS author_name,
+            cm.id           AS comment_id,
+            cm.content      AS comment_content,
+            cm.created_at   AS comment_created_at,
+            cu.username     AS comment_author
+        FROM posts p
+        LEFT JOIN categories c  ON p.category_id = c.id
+        LEFT JOIN users      u  ON p.user_id      = u.id
+        LEFT JOIN comments   cm ON cm.post_id     = p.id
+        LEFT JOIN users      cu ON cm.user_id     = cu.id
+        WHERE p.id = #{id}
+        ORDER BY cm.created_at ASC
+    </select>
+
     <update id="updatePost">
-    	UPDATE posts SET content = #{content} where id = {id}
+	    UPDATE posts
+	    <set>
+	        <if test="post.title != null and post.title != ''">
+	            title = #{post.title},
+	        </if>
+	        <if test="post.content != null and post.content != ''">
+	            content = #{post.content},
+	        </if>
+	        updated_at = NOW()
+	    </set>
+	    WHERE id = #{id}
     </update>
-    
+
+
+    <delete id="deletePost">
+        DELETE FROM posts WHERE id = #{id}
+    </delete>
+
     <insert id="insertComment">
         INSERT INTO comments (user_id, post_id, content)
-        VALUES (#{user_id}, #{post_id}, #{content})
-    </insert>    
-    
+        VALUES (#{post.userId}, #{postId}, #{post.content})
+    </insert>
+
+
     <delete id="deleteComment">
-    	DELETE FROM comments
-    	WHERE id = #{id}
-    </delete>    
-    
-    <select id="getAllCount" resultType="com.example.board.dto.BoardDto">
-    SELECT 
-        id, title, writer, created_at
-    FROM board
-    ORDER BY id DESC
-    LIMIT #{limit} OFFSET #{offset}
-	</select>
-    
+        DELETE FROM comments WHERE id = #{id}
+    </delete>
+
+    <select id="getAllCount" resultType="com.example.board.dto.PostResponseDto">
+        SELECT
+            p.id,
+            p.title,
+            p.created_at AS createdAt,
+            u.username   AS authorName
+        FROM posts p
+        LEFT JOIN users u ON p.user_id = u.id
+        ORDER BY p.id DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
     <select id="getTotalCount" resultType="int">
-        SELECT COUNT(*) FROM board
-    </select>  
+        SELECT COUNT(*) FROM posts
+    </select>
+
+    <update id="increaseViewCount">
+        UPDATE posts SET view_count = view_count + 1 WHERE id = #{id}
+    </update>
     
+    
+
 </mapper>

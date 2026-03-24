@@ -14,7 +14,7 @@ public interface PostMapper {
 
 	List<PostResponseDto> getAllPost();
 
-	List<PostResponseDto> getFindPost(Integer id);
+	PostResponseDto getFindPost(Integer id);
 
 	void updatePost(Integer id, PostRequestDto post);
 
@@ -27,4 +27,6 @@ public interface PostMapper {
 	List<PostRequestDto> getAllCount(int limit, int offset);
 
 	int getTotalCount();
+
+	void increaseViewCount(Integer id);
 }

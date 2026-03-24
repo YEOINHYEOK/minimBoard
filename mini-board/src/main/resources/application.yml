@@ -2,6 +2,10 @@ spring:
   profiles:
     active: dev
 
+  mvc:
+    view:
+      prefix: /WEB-INF/views/
+      suffix: .jsp
 
 server:
   port: 8181
