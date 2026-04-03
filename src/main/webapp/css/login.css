@@ -1,0 +1,71 @@
+/* 화면 중앙 정렬을 위한 설정 */
+body {
+	margin: 0;
+	padding: 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 80vh;
+	background-color: #f4f7f6;
+	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* 로그인 박스 컨테이너 */
+.container {
+	width: 400px; /* 박스 크기 확대 */
+	padding: 40px;
+	background: #fff;
+	box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+	border-radius: 10px;
+	text-align: center;
+}
+
+h2 {
+	margin-bottom: 30px;
+	color: #333;
+	font-weight: bold;
+	font-size: 26px;
+}
+
+/* 입력창 디자인 - 세로 배치 */
+input {
+	width: 100%;
+	padding: 15px; /* 글씨 및 박스 크기 확대 */
+	margin-bottom: 15px;
+	border: 1px solid #ddd;
+	border-radius: 5px;
+	box-sizing: border-box; /* 패딩이 크기에 영향 주지 않도록 */
+	font-size: 18px;
+}
+
+/* 버튼 공통 디자인 */
+button {
+	width: 100%;
+	padding: 15px;
+	margin-top: 10px;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+	font-weight: bold;
+	transition: background 0.3s;
+}
+
+/* 로그인 버튼 - 파란색 */
+#loginBtn {
+	background-color: #007bff;
+	color: white;
+}
+
+#loginBtn:hover {
+	background-color: #0056b3;
+}
+
+/* 비로그인 버튼 - 회색 */
+#authBtn {
+	background-color: #6c757d;
+	color: white;
+}
+
+#authBtn:hover {
+	background-color: #5a6268;
+}

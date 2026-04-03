@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.board.mapper.UserMapper">
+	<resultMap id="StatsMap"
+		type="com.example.board.dto.StatsDto">
+		<result property="totalPosts" column="total_posts" />
+		<result property="totalUsers" column="total_users" />
+		<result property="totalComments" column="total_comments" />
+	</resultMap>
+
+	<update id="updateUser">
+		UPDATE users
+		SET role = #{users.role}
+		where id = #{id}
+	</update>
+
+	<select id="getAllUsers"
+		resultType="com.example.board.dto.UsersDto">
+		SELECT
+		id,
+		username,
+		email,
+		role,
+		created_at AS createdAt,
+		updated_at AS updatedAt
+		FROM users
+		<where>
+			<if test="keyword != null and keyword != ''">
+				AND (
+				username LIKE CONCAT('%', #{keyword}, '%')
+				OR email LIKE CONCAT('%', #{keyword}, '%')
+				OR role LIKE CONCAT('%', #{keyword}, '%')
+				OR CAST(id AS CHAR) LIKE CONCAT('%', #{keyword}, '%')
+				)
+			</if>
+		</where>
+		ORDER BY
+		<choose>
+			<when test="sortColumn == 'id'">id</when>
+			<when test="sortColumn == 'username'">username</when>
+			<when test="sortColumn == 'role'">role</when>
+			<when test="sortColumn == 'createdAt'">created_at</when>
+			<otherwise>createdAt</otherwise>
+		</choose>
+		<choose>
+			<when
+				test="sortOrder != null and sortOrder.toLowerCase() == 'asc'">ASC</when>
+			<otherwise>DESC</otherwise>
+		</choose>
+		LIMIT #{size} OFFSET #{offset}
+	</select>
+
+	<select id="getTotalCount" resultType="int">
+		SELECT COUNT(*)
+		FROM users
+		<where>
+			<if test="keyword != null and keyword != ''">
+				AND (username LIKE CONCAT('%', #{keyword}, '%')
+				OR email
+				LIKE CONCAT('%', #{keyword}, '%'))
+				OR id LIKE CONCAT('%', #{keyword},
+				'%')
+			</if>
+		</where>
+	</select>
+
+	<select id="getStats" resultMap="StatsMap">
+		SELECT
+		(SELECT COUNT(*) FROM
+		posts WHERE 1=1) AS total_posts,
+		(SELECT COUNT(*) FROM users WHERE 1=1)
+		AS total_users,
+		(SELECT COUNT(*) FROM comments WHERE 1=1) AS
+		total_comments
+	</select>
+
+</mapper>
+

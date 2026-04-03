@@ -1,0 +1,16 @@
+spring:
+  profiles:
+    active: dev
+
+  mvc:
+    view:
+      prefix: /WEB-INF/jsp/
+      suffix: .jsp
+
+server:
+  port: 8181
+
+jwt:
+  secret: your-secret-key-must-be-at-least-32-characters-long-here
+  access-token-expiration-ms: 900000      
+  refresh-token-expiration-ms: 604800000  

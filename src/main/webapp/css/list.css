@@ -1,0 +1,81 @@
+/* 1. 게시판 본문을 화면 정중앙에 배치 */
+body {
+	margin: 0;
+	display: flex;
+	flex-direction: column;
+	align-items: center; /* 가로 중앙 */
+	padding-top: 80px; /* 버튼 영역과 겹치지 않게 여유 */
+	background-color: #fdfdfd;
+	font-family: 'Malgun Gothic', sans-serif;
+}
+
+/* 2. 로그아웃/회원정보 버튼을 오른쪽 상단 구석에 고정 */
+.header-right {
+	position: absolute; /* 화면 위치에 구애받지 않고 고정 */
+	top: 20px;
+	right: 30px;
+	display: flex; /* 버튼을 가로로 나열 */
+	gap: 10px; /* 버튼 사이 간격 */
+	z-index: 1000;
+}
+
+.header-right button {
+	padding: 7px 15px;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+	font-weight: bold;
+	color: white;
+	background-color: #6c757d; /* 기본 회색 */
+}
+
+#logoutBtn:hover {
+	background-color: #d9534f;
+} /* 로그아웃은 빨간색 계열 */
+#userBtn{
+	visibility : hidden;
+}
+#userBtn:hover {
+	background-color: #5cb85c;
+} /* 회원정보는 초록색 계열 */
+
+/* 3. 게시판 컨테이너 (너비 고정 및 중앙 유지) */
+.board-wrapper {
+	width: 1200px;
+}
+
+h2 {
+	font-size: 32px;
+	margin-bottom: 25px;
+}
+
+/* jqGrid 내부 글씨 크기 확대 */
+.ui-jqgrid tr.jqgrow td {
+	height: 45px;
+	font-size: 16px; /* 여기서 글씨 크기 조절 */
+}
+
+.ui-jqgrid .ui-jqgrid-htable th {
+	height: 40px;
+	font-size: 16px;
+	font-weight: bold;
+}
+
+/* 검색창 영역 가로 배치 */
+.search-area {
+	display: flex;
+	justify-content: space-between;
+	margin-bottom: 15px;
+}
+
+#searchTitle {
+	padding: 8px;
+	font-size: 16px;
+	width: 300px;
+}
+
+#searchBtn, #writeBtn {
+	padding: 8px 20px;
+	font-size: 15px;
+	cursor: pointer;
+}

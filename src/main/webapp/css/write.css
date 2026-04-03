@@ -1,0 +1,90 @@
+body {
+	margin: 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	min-height: 100vh;
+	background-color: #f8f9fa;
+	font-family: 'Pretendard', sans-serif;
+}
+
+/* 메인 카드 박스 */
+.write-container {
+	width: 100%;
+	max-width: 700px;
+	background: #fff;
+	padding: 40px;
+	border-radius: 12px;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* 1. 제목(H2)은 무조건 맨 위에 단독 배치 */
+h2 {
+	margin: 0 0 30px 0;
+	font-size: 24px;
+	text-align: left; /* 왼쪽 정렬이 더 모던함 */
+	color: #111;
+}
+
+/* 폼 요소들을 수직으로 차곡차곡 쌓음 */
+.form-wrap {
+	display: flex;
+	flex-direction: column;
+	gap: 15px; /* 요소 사이 간격 */
+}
+
+/* 입력창 공통 스타일 */
+input[type="text"], select, textarea {
+	width: 100%;
+	padding: 12px 15px;
+	border: 1px solid #e0e0e0;
+	border-radius: 8px;
+	font-size: 15px;
+	box-sizing: border-box;
+	outline: none;
+	transition: border-color 0.2s;
+}
+
+input:focus, select:focus, textarea:focus {
+	border-color: #007bff;
+}
+
+textarea {
+	min-height: 300px;
+	resize: vertical;
+}
+
+/* 버튼 영역: 내용 아래 우측 정렬 */
+.btn-group {
+	display: flex;
+	justify-content: flex-end;
+	gap: 10px;
+	margin-top: 20px;
+}
+
+button {
+	padding: 12px 25px;
+	border-radius: 8px;
+	border: none;
+	font-weight: 600;
+	cursor: pointer;
+	transition: 0.2s;
+}
+
+#submitBtn {
+	background: #007bff;
+	color: white;
+}
+
+#submitBtn:hover {
+	background: #0056b3;
+}
+
+.cancel-btn {
+	background: #eee;
+	color: #444;
+}
+
+.cancel-btn:hover {
+	background: #ddd;
+}

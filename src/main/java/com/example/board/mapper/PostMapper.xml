@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.board.mapper.PostMapper">
+
+
+	<resultMap id="PostDetailResultMap"
+		type="com.example.board.dto.PostResponseDto">
+		<id property="id" column="id" />
+		<result property="title" column="title" />
+		<result property="content" column="content" />
+		<result property="viewCount" column="view_count" />
+		<result property="createdAt" column="created_at" />
+		<result property="updatedAt" column="updated_at" />
+
+		<result property="categoryName" column="name" />
+		<result property="username" column="username" />
+
+		<collection property="comments"
+			ofType="com.example.board.dto.CommentDto">
+			<id property="id" column="comment_id" />
+			<result property="content" column="comment_content" />
+			<result property="createdAt" column="comment_created_at" />
+			<result property="commentname" column="comment_user_name" />
+		</collection>
+	</resultMap>
+
+	<insert id="postInsert">
+		INSERT INTO posts (category_id, user_id, title,
+		content)
+		VALUES (#{categoryId}, #{userId}, #{title}, #{content})
+	</insert>
+
+
+	<select id="getAllPost"
+		resultType="com.example.board.dto.PostResponseDto">
+		SELECT
+		p.id,
+		p.category_id,
+		p.title,
+		p.content,
+		p.created_at AS createdAt,
+		p.updated_at AS updatedAt,
+		p.view_count AS viewCount,
+		u.username,
+		c.name
+		AS categoryName
+		FROM posts p
+		LEFT JOIN users u ON p.user_id = u.id
+		LEFT
+		JOIN categories c ON p.category_id = c.id
+		<where>
+			<if test="keyword != null and keyword != ''">
+				AND p.title LIKE CONCAT('%', #{keyword}, '%')
+				OR c.name
+				LIKE CONCAT('%', #{keyword}, '%')
+				OR p.id LIKE CONCAT('%',
+				#{keyword}, '%')
+				OR u.username LIKE CONCAT ('%', #{keyword}, '%')
+			</if>
+		</where>
+		ORDER BY
+		<choose>
+			<when test="sortColumn== 'id'">p.id</when>
+			<when test="sortColumn == 'title'">p.title</when>
+			<when test="sortColumn == 'username'">u.username</when>
+			<when test="sortColumn == 'viewCount'">p.view_count</when>
+			<when test="sortColumn == 'categoryName'">c.name</when>
+			<when test="sortColumn == 'createdAt'">p.created_at</when>
+			<otherwise>p.createdAt</otherwise>
+		</choose>
+		<choose>
+			<when test="sortOrder == 'asc'">ASC</when>
+			<otherwise>DESC</otherwise>
+		</choose>
+		LIMIT #{size} OFFSET #{offset}
+	</select>
+
+	<select id="getTotalCount" resultType="int">
+		SELECT COUNT(*)
+		FROM posts p
+		LEFT JOIN users u ON p.user_id = u.id
+		LEFT
+		JOIN categories c ON p.category_id = c.id
+		<where>
+			<if test="keyword != null and keyword != ''">
+				AND p.title LIKE CONCAT('%', #{keyword}, '%')
+				OR c.name
+				LIKE CONCAT('%', #{keyword}, '%')
+				OR p.id LIKE CONCAT('%',
+				#{keyword}, '%')
+				OR u.username LIKE CONCAT ('%', #{keyword}, '%')
+			</if>
+		</where>
+	</select>
+
+
+	<select id="getFindPost" resultMap="PostDetailResultMap">
+		SELECT
+		p.id,
+		p.title,
+		p.content,
+		p.view_count,
+		p.created_at,
+		p.updated_at,
+		c.name,
+		u.username,
+		cm.id AS comment_id,
+		cm.content AS comment_content,
+		cm.created_at AS
+		comment_created_at,
+		cu.username AS comment_user_name
+		FROM posts p
+		LEFT
+		JOIN categories c ON p.category_id = c.id
+		LEFT JOIN users u ON
+		p.user_id = u.id
+		LEFT JOIN comments cm ON p.id = cm.post_id
+		LEFT JOIN
+		users cu ON cm.user_id = cu.id
+		WHERE p.id = #{id}
+		ORDER BY cm.created_at
+		ASC
+	</select>
+
+	<update id="updatePost">
+		UPDATE posts
+		<set>
+			<if test="post.title != null and post.title != ''">
+				title = #{post.title},
+			</if>
+			<if test="post.content != null and post.content != ''">
+				content = #{post.content},
+			</if>
+			updated_at = NOW()
+		</set>
+		WHERE id = #{id}
+	</update>
+
+
+	<delete id="deletePost">
+		DELETE FROM posts WHERE id = #{id}
+	</delete>
+
+	<insert id="insertComment">
+		INSERT INTO comments (user_id, post_id, content)
+		VALUES (#{post.userId}, #{id}, #{post.content})
+	</insert>
+
+
+	<delete id="deleteComment">
+		DELETE FROM comments WHERE id = #{id}
+	</delete>
+
+	<update id="increaseViewCount">
+		UPDATE posts SET view_count = view_count + 1 WHERE id
+		= #{id}
+	</update>
+
+	<select id="userFind" resultType="long">
+		SELECT id
+		FROM users
+		WHERE
+		username = #{username};
+	</select>
+
+	<select id="getFindComment"
+		resultType="com.example.board.dto.CommentDto">
+		SELECT
+		c.id,
+		u.username
+		FROM comments c
+		LEFT JOIN users u ON
+		c.user_id = u.id
+		WHERE c.id = #{id};
+	</select>
+</mapper>
